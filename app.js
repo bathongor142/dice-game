@@ -55,7 +55,7 @@ document.querySelector(".btn-roll").addEventListener("click", function () {
     // буусан санамсаргүй тоонд харгалзах шооны зургийг вэб дээр гаргаж ирнэ
     diceDom.src = "dice-" + diceNumber + ".png";
     //буусан тоон нь 1 ээс ялгаатай бол идэвхтэй тоглогчийн ээлжийг оноог нэмэгдүүлнэ.
-    if (diceNumber !== 10) {
+    if (diceNumber !== 1) {
       //   1 ээс Ялгаатай тоо буулгаа. Буусан тоог тоглогчид нэмж өгнө
       roundScore = roundScore + diceNumber;
       document.getElementById(
