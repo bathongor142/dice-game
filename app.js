@@ -1,3 +1,5 @@
+// Тоглоомын бүх газарт ашиглдах төлөвийн хувьсагч
+var isNewgame;
 // тогломын бүх газар ашиглагдах хувьсагч
 var activePlayer;
 // хоёр тоглогчын цуглуулсан оноо
@@ -10,6 +12,8 @@ var diceDom = document.querySelector(".dice");
 initGame();
 // тогломыг шинээр эхэлхэд билдэн
 function initGame() {
+  //тоглоом эхэллээ гэдэг төлөвт оруулна
+  isNewGame = true;
   // Тоглогчийн ээлжийг хадгалах хувьсагч, нэгдүгээр тоглогчийг 0, хоёрдугаар тоглогчийн 1 гэж тэмдэглэнэ.
 
   activePlayer = 0;
@@ -43,47 +47,58 @@ function initGame() {
 
 // Шоог шидэх эвэнт листенер
 document.querySelector(".btn-roll").addEventListener("click", function () {
-  // 1-6 дотор санамсаргүй тоо гаргаж авна
-  var diceNumber = Math.floor(Math.random() * 6) + 1;
-  // Шоо зургийг вэб дээр гаргаж ирнэ
-  diceDom.style.display = "block";
-  // буусан санамсаргүй тоонд харгалзах шооны зургийг вэб дээр гаргаж ирнэ
-  diceDom.src = "dice-" + diceNumber + ".png";
-  //буусан тоон нь 1 ээс ялгаатай бол идэвхтэй тоглогчийн ээлжийг оноог нэмэгдүүлнэ.
-  if (diceNumber !== 1) {
-    //   1 ээс Ялгаатай тоо буулгаа. Буусан тоог тоглогчид нэмж өгнө
-    roundScore = roundScore + diceNumber;
-    document.getElementById("current-" + activePlayer).textContent = roundScore;
+  if (isNewGame === true) {
+    // 1-6 дотор санамсаргүй тоо гаргаж авна
+    var diceNumber = Math.floor(Math.random() * 6) + 1;
+    // Шоо зургийг вэб дээр гаргаж ирнэ
+    diceDom.style.display = "block";
+    // буусан санамсаргүй тоонд харгалзах шооны зургийг вэб дээр гаргаж ирнэ
+    diceDom.src = "dice-" + diceNumber + ".png";
+    //буусан тоон нь 1 ээс ялгаатай бол идэвхтэй тоглогчийн ээлжийг оноог нэмэгдүүлнэ.
+    if (diceNumber !== 10) {
+      //   1 ээс Ялгаатай тоо буулгаа. Буусан тоог тоглогчид нэмж өгнө
+      roundScore = roundScore + diceNumber;
+      document.getElementById(
+        "current-" + activePlayer
+      ).textContent = roundScore;
+    } else {
+      //   1 буусан тул тоглогчийн ээлжийг энэ хэсэгт сольж өгнө.
+      switchToNextPlayer();
+    }
   } else {
-    //   1 буусан тул тоглогчийн ээлжийг энэ хэсэгт сольж өгнө.
-    switchToNextPlayer();
+    alert("Тоглом дуусан байна. new game товчийг дарааж шинээр эхэл");
   }
 });
-
 // HOLD товчны эвент листнер
 document.querySelector(".btn-hold").addEventListener("click", function () {
-  //Уг тоглогчийн цугуулсан ээлжийн оноог глобаль оноон дээр нь нэмж өгнө
-  // if (activePlayer === 0) {
-  //   scores[0] = scores[0] + roundScore;
-  // } else {
-  //   scores[1] = scores[1] + roundScore;
-  // }
-  scores[activePlayer] = scores[activePlayer] + roundScore;
-  // Дэлгэц дээр оноог өөрчилнө
-  document.getElementById("score-" + activePlayer).textContent =
-    scores[activePlayer];
+  if (isNewGame) {
+    //Уг тоглогчийн цугуулсан ээлжийн оноог глобаль оноон дээр нь нэмж өгнө
+    // if (activePlayer === 0) {
+    //   scores[0] = scores[0] + roundScore;
+    // } else {
+    //   scores[1] = scores[1] + roundScore;
+    // }
+    scores[activePlayer] = scores[activePlayer] + roundScore;
+    // Дэлгэц дээр оноог өөрчилнө
+    document.getElementById("score-" + activePlayer).textContent =
+      scores[activePlayer];
 
-  //Уг тоглогч хожисон эсгийг шалгах(оноо нь 100 аас их эсэх) шалгах
-  if (scores[activePlayer] >= 10) {
-    // Ялагч гэсэн текс нэр оронд гарган
-    document.getElementById("name-" + activePlayer).textContent = "WINNER!!!";
-    document
-      .querySelector(".player-" + activePlayer + "-panel")
-      .classList.add("winner");
+    //Уг тоглогч хожисон эсгийг шалгах(оноо нь 100 аас их эсэх) шалгах
+    if (scores[activePlayer] >= 10) {
+      //Тогломыг дуусан төлөвт оруулна
+      isNewGame = false;
+      // Ялагч гэсэн текс нэр оронд гарган
+      document.getElementById("name-" + activePlayer).textContent = "WINNER!!!";
+      document
+        .querySelector(".player-" + activePlayer + "-panel")
+        .classList.add("winner");
+    }
+
+    //Тоглогчийн ээлжийг солино
+    switchToNextPlayer();
+  } else {
+    alert("Тоглом дуусан байна. new game товчийг дарааж шинээр эхэл");
   }
-
-  //Тоглогчийн ээлжийг солино
-  switchToNextPlayer();
 });
 
 // Энэ функц нь тоглох ээлжийг солин
